@@ -25,11 +25,12 @@ import GetLocation from 'react-native-get-location';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
+import RNRestart from 'react-native-restart';
 const App = () => {
   const [loadingButtonCheckin, setloadingButtonCheckin] = useState(false);
   const [loadingButtonCheckOut, setloadingButtonCheckOut] = useState(false);
   const [icon, seticon] = useState();
+  const [iconCheckouy, seticonCheckouy] = useState();
   const [isCheckIn, setIsCheckIn] = useState(null);
   const [isCheckOut, setIsCheckOut] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +75,7 @@ const App = () => {
                       location: location,
                       buildId: buildId,
                       deviceType: deviceType,
-                      systemVersion: systemVer,
+                      systemversion: systemVer,
                       ssid: ssid,
                     });
                   })
@@ -95,15 +96,24 @@ const App = () => {
     // const userId = id.
     try {
       const user = await AsyncStorage.getItem('userId');
-      console.log('user add', user);
+      const dataJson = JSON.parse(user);
+
+      console.log('user sfa.fdsasssid in', user);
       const getday = new Date();
       const fulltime = getday.toISOString();
+      console.log('date', fulltime);
+
       const date = fulltime.slice(0, 10);
       const gettime = new Date();
       const time = gettime.toLocaleTimeString();
       const longitude = getInfor.location.longitude;
+      // console.log('longitude', longitude);
+      console.log(getInfor.brand);
       const latitude = getInfor.location.latitude;
-      const requestUrl = 'http://192.168.0.103:3000/user/information';
+      console.log('ssid', getInfor.ssid);
+      console.log('userid', user);
+
+      const requestUrl = 'http://192.168.41.29:4000/information/create';
       const response = await axios.post(requestUrl, {
         uniqueId: getInfor.uniqueId,
         ipAddress: getInfor.ipAddress,
@@ -119,41 +129,50 @@ const App = () => {
         time: time,
         longitude: longitude,
         latitude: latitude,
-        userId: user,
+        userId: dataJson._id,
       });
+      console.log('test resp', response);
       if (response) {
         if (response.data.status) {
-          console.log('#data insert check in:', response.data);
+          console.log('#data insert check in:', response.data.data);
           if (status) {
-            seticon(true);
+            if (response.data.data.status === 0) {
+              seticon(true);
+              seticonCheckouy(false);
+            } else {
+              seticon(true);
+              seticonCheckouy(true);
+            }
             // 1 == true 0==false
             setloadingButtonCheckOut(false);
-
             setloadingButtonCheckin(false);
             setIsCheckIn(true);
             setIsCheckOut(true);
-            Alert.alert('Thông báo', response.data.notification);
+            // Alert.alert('Thông báo', response.data.notification);
             console.log('@checkOut', response.data.status);
           } else {
             seticon(true);
             setloadingButtonCheckin(false);
             setloadingButtonCheckOut(false);
-
             setIsCheckIn(true);
             setIsCheckOut(false);
-            Alert.alert('Thông báo', response.data.notification);
+            Alert.alert('Thông báo', response.data.notifica);
 
             console.log('@checkIn', response.data.status);
           }
         } else {
-          Alert.alert('Thông báo', response.data.notification);
+          Alert.alert(response.data.notifica);
+          // Alert.alert('Thông báo', response.data.notifica);
         }
       }
     } catch (error) {
+      Alert.alert(
+        'Your connection is unstable. Please exit the app and try again.',
+      );
       setloadingButtonCheckOut(true);
       seticon(false);
       setloadingButtonCheckin(true);
-      console.log(error);
+      console.log('error:', error);
       return false;
     }
   };
@@ -171,13 +190,15 @@ const App = () => {
     async function isCheckIn() {
       try {
         const user = await AsyncStorage.getItem('userId');
-        console.log('user check in', user);
+        const dataJson = JSON.parse(user);
+
+        console.log('user sfa.ádfasdfasd in', user);
         const getTime = new Date();
         const fulltime = getTime.toISOString();
         const date = fulltime.slice(0, 10);
-        const requestUrl = 'http://192.168.0.103:3000/user/checkin';
+        const requestUrl = 'http://192.168.41.29:4000/information/checkin';
         const response = await axios.post(requestUrl, {
-          userId: user,
+          userId: dataJson._id,
           date: date,
         });
         if (response) {
@@ -186,10 +207,13 @@ const App = () => {
             seticon(true);
             setIsCheckIn(true);
             setIsLoading(false);
+            setIsCheckOut(false);
           } else {
             seticon(false);
             setIsCheckIn(false);
             setIsLoading(false);
+            setIsCheckOut(true);
+            setIsCheckOut(true);
           }
         }
 
@@ -207,26 +231,29 @@ const App = () => {
     async function isCheckOut() {
       try {
         const user = await AsyncStorage.getItem('userId');
-        console.log('user check out:', user);
+        const dataJson = JSON.parse(user);
+
+        // console.log('check-in', dataJson._id);
         const getTime = new Date();
         const fulltime = getTime.toISOString();
         const date = fulltime.slice(0, 10);
-        const requestUrl = 'http://192.168.0.103:3000/user/checkout';
+        const requestUrl = 'http:/192.168.41.29:4000/information/checkout';
         const response = await axios.post(requestUrl, {
-          userId: user,
+          userId: dataJson._id,
           date: date,
         });
         if (response) {
           console.log('kết quả check out', response.data);
           if (response.data.mess === 'Success') {
-            seticon(true);
+            seticonCheckouy(true);
             console.log('hello');
             setIsCheckOut(true);
             setIsLoading(false);
           } else {
-            seticon(false);
-            console.log('sad');
-            setIsCheckOut(false);
+            seticonCheckouy(false);
+            // console.log('sad');
+            // setIsCheckOut(false);
+            //nhanle da test
             setIsLoading(false);
           }
         }
@@ -245,7 +272,7 @@ const App = () => {
         <Button
           ViewComponent={LinearGradient}
           linearGradientProps={{
-            colors: ['purple', '#b38b89'],
+            colors: ['#88a2c2', '#b38b89'],
             start: {x: 0, y: 0.5},
             end: {x: 1, y: 0.5},
           }}
@@ -264,7 +291,7 @@ const App = () => {
                 }
               : {name: null}
           }
-          title="Check In"
+          title="CHECK IN"
           titleStyle={styles.text}
           // iconPosition="top"
           onPress={() => checkIn()}
@@ -273,12 +300,12 @@ const App = () => {
         <Button
           ViewComponent={LinearGradient}
           linearGradientProps={{
-            colors: ['purple', '#b38b89'],
+            colors: ['#5d7373', '#b38b89'],
             start: {x: 0, y: 0.5},
             end: {x: 1, y: 0.5},
           }}
           icon={
-            icon
+            iconCheckouy
               ? {
                   name: 'check-circle',
                   size: 25,
@@ -300,6 +327,37 @@ const App = () => {
           titleStyle={styles.text}
           // iconPosition="top"
           onPress={() => checkOut()}
+        />
+        <Button
+          ViewComponent={LinearGradient}
+          linearGradientProps={{
+            colors: ['#5d7373', '#b38b89'],
+            start: {x: 0, y: 0.5},
+            end: {x: 1, y: 0.5},
+          }}
+          // icon={
+          //   iconCheckouy
+          //     ? {
+          //         name: 'check-circle',
+          //         size: 25,
+          //         color: 'white',
+          //       }
+          //     : {name: null}
+          // }
+          // disabled={true}
+          // loading={loadingButtonCheckOut}
+          // TouchableComponent={}
+          buttonStyle={styles.loginBtn}
+          // icon={{
+          //   name: 'check-circle',
+          //   size: 25,
+          //   color: 'white',
+          // }}
+          // disabled={isCheckOut}
+          title="Resfesh "
+          titleStyle={styles.text}
+          // iconPosition="top"
+          onPress={() => RNRestart.Restart()}
         />
       </View>
 
@@ -325,6 +383,7 @@ const App = () => {
 };
 var styles = StyleSheet.create({
   container: {
+    top: '80%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -341,6 +400,7 @@ var styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
+    color: 'black',
   },
 });
 

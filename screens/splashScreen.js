@@ -30,7 +30,7 @@ const splashScreen = ({navigation}) => {
       AsyncStorage.getItem('userId').then(userId =>
         navigation.replace(userId === null ? 'loginandsignup' : 'drawerscreen'),
       );
-    }, 5000); // loading in 5s
+    }, 1000); // loading in 5s
   }, []);
 
   return (
@@ -39,10 +39,10 @@ const splashScreen = ({navigation}) => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#e6cae1',
+        // backgroundColor: 'red',
       }}>
       <LottieView
-        source={require('../asset/12546-welcome.json')}
+        source={require('../asset/42618-welcome.json')}
         autoPlay
         loop
       />

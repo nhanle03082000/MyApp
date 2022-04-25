@@ -2,14 +2,14 @@
 // https://aboutreact.com/react-native-login-and-signup/
 
 // Import React
-import React from 'react';
 
 // Import Navigators from React Navigation
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-// Import Screens
+import React, {useState, useEffect} from 'react';
+
 import profileScreen from './profileScreen';
 import homScreen from './homScreen';
 import customMenu from '../components/customMenu';
@@ -18,7 +18,7 @@ import IconAntDesign from 'react-native-vector-icons/AntDesign';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const homScreenStack = ({navigation}) => {
+const homScreenStack = ({navigation, route}) => {
   return (
     <Stack.Navigator initialRouteName="HomeScreen">
       <Stack.Screen
@@ -28,7 +28,7 @@ const homScreenStack = ({navigation}) => {
           title: 'Home', //Set Header Title
           headerLeft: () => <DrawerHeader navigationProps={navigation} />,
           headerStyle: {
-            backgroundColor: '#93278f', //Set Header color
+            backgroundColor: '#5592d9', //Set Header color
           },
           headerTintColor: '#fff', //Set Header text color
           headerTitleStyle: {
@@ -47,7 +47,7 @@ const profileScreenStack = ({navigation}) => {
       screenOptions={{
         headerLeft: () => <DrawerHeader navigationProps={navigation} />,
         headerStyle: {
-          backgroundColor: '#93278f', //Set Header color
+          backgroundColor: '#5592d9', //Set Header color
         },
         headerTintColor: '#fff', //Set Header text color
         headerTitleStyle: {

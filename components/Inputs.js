@@ -77,8 +77,8 @@ const Inputs = props => {
         }
       />
       {/* <TouchableOpacity style={styles.btnEye}>
-          <Icon name="eye" size={25} color="grey"></Icon>
-        </TouchableOpacity> */}
+        <Icon name="eye" size={25} color="grey"></Icon>
+      </TouchableOpacity> */}
     </View>
   );
 };

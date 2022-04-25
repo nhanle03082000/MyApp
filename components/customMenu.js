@@ -1,6 +1,6 @@
-import React from 'react';
 import {View, Text, Alert, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, {useState, useEffect} from 'react';
 
 import COLORS from './color';
 import {
@@ -11,12 +11,13 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const customMenu = props => {
+  const user = AsyncStorage.getItem('userId');
+
+  console.log('nhanle', user);
+
   return (
     <View style={stylesSidebar.sideMenuContainer}>
       <View style={stylesSidebar.profileHeader}>
-        <View style={stylesSidebar.profileHeaderPicCircle}>
-          <Text style={{fontSize: 25, color: 'red'}}></Text>
-        </View>
         <Text style={stylesSidebar.profileHeaderText}>
           {' '}
           <Text style={{fontWeight: 'bold', fontSize: 22, color: COLORS.dark}}>
@@ -73,13 +74,13 @@ const stylesSidebar = StyleSheet.create({
   sideMenuContainer: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#b59cb3',
+    backgroundColor: '#b8cce3',
     paddingTop: 40,
     color: 'white',
   },
   profileHeader: {
     flexDirection: 'row',
-    backgroundColor: '#b59cb3', //cai nay la chổ tên á
+    backgroundColor: '#84a1c4', //cai nay la chổ tên á
     padding: 15,
     textAlign: 'center',
   },

@@ -22,8 +22,8 @@ import {
 import {useState, useEffect} from 'react';
 const login2 = ({navigation}) => {
   const [isLogin, setisLogin] = useState({
-    username: 'trongnhan2',
-    password: '0925980058',
+    username: '',
+    password: '',
   });
   const [error, seterror] = useState('');
 
@@ -33,23 +33,25 @@ const login2 = ({navigation}) => {
       console.log(user);
       const pass = isLogin.password;
       console.log(pass);
-      const requestUrl = 'http://192.168.0.103:3000/user/singin';
+      const requestUrl = 'http://192.168.41.29:4000/auth/login';
       const response = await axios.post(requestUrl, {
         username: user,
         password: pass,
       });
-      if (response.data.status === 'ok') {
-        const idUser = response.data.user.id;
-        console.log(idUser);
-        AsyncStorage.setItem('userId', idUser);
+      console.log('fsadfsa', response);
+      if (response.data) {
+        const idUser = response.data.data;
+        console.log('data tra ve::', idUser);
+        await AsyncStorage.setItem('userId', JSON.stringify(idUser));
         navigation.push('drawerscreen');
+        console.log(response.data.token);
       } else {
         console.log(response.data.error);
         seterror(response.data.error);
         console.log(error);
       }
     } catch (error) {
-      console.log(error);
+      Alert.alert('Incorrect credentials');
     }
   };
 
@@ -149,7 +151,7 @@ const login2 = ({navigation}) => {
     //   </View>
     // </View>
     <SafeAreaView
-      style={{paddingHorizontal: 20, flex: 1, backgroundColor: '#e6cae1'}}>
+      style={{paddingHorizontal: 20, flex: 1, backgroundColor: 'while'}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{flexDirection: 'row', marginTop: 30}}>
           <Text style={{fontWeight: 'bold', fontSize: 22, color: COLORS.dark}}>
@@ -208,41 +210,10 @@ const login2 = ({navigation}) => {
           ) : null}
           <TouchableOpacity
             style={styles.loginBtn}
+            // onPress={() => navigation.push('drawerscreen')}>
             onPress={() => loginExample()}>
             <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}>
               Sign In
-            </Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              marginVertical: 20,
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <View style={style.line}></View>
-            <Text style={{marginHorizontal: 5, fontWeight: 'bold'}}>OR</Text>
-            <View style={style.line}></View>
-          </View>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            marginTop: 0,
-            // marginBottom: 20,
-          }}>
-          <Text style={{color: COLORS.light, fontWeight: 'bold'}}>
-            Do you have an account ?
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('SignUp');
-            }}>
-            <Text style={{color: COLORS.pink, fontWeight: 'bold'}}>
-              Sign Up
             </Text>
           </TouchableOpacity>
         </View>
@@ -302,7 +273,7 @@ var styles = StyleSheet.create({
   },
   loginBtn: {
     width: '100%',
-    backgroundColor: '#93278f',
+    backgroundColor: '#5592d9',
     borderRadius: 25,
     height: 50,
     alignItems: 'center',
@@ -310,18 +281,19 @@ var styles = StyleSheet.create({
     marginBottom: 10,
   },
   btnEye: {
-    position: 'relative',
-    left: 280,
-    right: 0,
-    bottom: 45,
-    // position: 'relative',
-    // left: 280,
-    // bottom: 45,
+    position: 'absolute',
+
+    left: '90%',
+    top: '55%',
   },
   errorTextStyle: {
     color: 'red',
     textAlign: 'center',
     fontSize: 14,
+  },
+  inputContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 export default login2;

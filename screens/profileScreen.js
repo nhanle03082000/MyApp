@@ -15,6 +15,7 @@ import {
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const BG_IMG = 'https://wallpaperaccess.com/full/1205291.png';
+import axios from 'axios';
 
 const profileScreen = () => {
   const [id, setid] = useState('');
@@ -23,41 +24,72 @@ const profileScreen = () => {
     data: {},
   });
   const [isLoading, setIsLoading] = useState(true);
-  const loginExample = () => {
-    const getTime = new Date();
-    const fulltime = getTime.toISOString();
-    const date = fulltime.slice(0, 7);
-    fetch('http://192.168.0.103:3000/user/getTime', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        date: date,
-        userId: id,
-      }),
-    })
-      .then(res => res.json())
-      .then(res => {
-        const result = res.data;
-        console.log(result);
-        const lsHisTitle = [];
-        Object.keys(res.data).forEach(key => {
-          lsHisTitle.push(key);
-        });
+  // const loginExample = () => {
+  //   const getTime = new Date();
+  //   const fulltime = getTime.toISOString();
+  //   const date = fulltime.slice(0, 7);
+  //   fetch('http://192.168.1.6:4000/user/getTime', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       date: date,
+  //       userId: id,
+  //     }),
+  //   })
+  //     .then(res => res.json())
+  //     .then(res => {
+  //       const result = res.data;
+  //       console.log(result);
+  //       const lsHisTitle = [];
+  //       Object.keys(res.data).forEach(key => {
+  //         lsHisTitle.push(key);
+  //       });
 
-        console.log('titles:', lsHisTitle, 'data:', res.data);
-        console.log('titles:', lsHisTitle, 'data:', res.data);
-        setIsLoading(false);
-        setHistory({data: res.data, titles: lsHisTitle});
-      });
-  };
+  //       console.log('titles:', lsHisTitle, 'data:', res.data);
+  //       console.log('titles:', lsHisTitle, 'data:', res.data);
+  //       setIsLoading(false);
+  //       setHistory({data: res.data, titles: lsHisTitle});
+  //     });
+  // };
   useEffect(() => {
-    AsyncStorage.getItem('userId').then(value => {
-      setid(value);
-    });
+    async function loginExample() {
+      try {
+        const user = await AsyncStorage.getItem('userId');
+        const dataJson = JSON.parse(user);
+        const getTime = new Date();
+        const fulltime = getTime.toISOString();
+        const date = fulltime.slice(0, 7);
+        const requestUrl = 'http://192.168.41.29:4000/information/getTime';
+        const response = await axios.post(requestUrl, {
+          userId: dataJson._id,
+          date: date,
+        });
+        if (response) {
+          const result = response.data.data;
+          console.log(result);
+          const lsHisTitle = [];
+          Object.keys(result).forEach(key => {
+            lsHisTitle.push(key);
+          });
+          console.log('titles:', lsHisTitle, 'data:', result);
+          console.log('titles:', lsHisTitle, 'data:', result);
+          setIsLoading(false);
+          setHistory({data: result, titles: lsHisTitle});
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
     loginExample();
   }, []);
+  // useEffect(() => {
+  //   AsyncStorage.getItem('userId').then(value => {
+  //     setid(value);
+  //   });
+  //   loginExample();
+  // }, []);
   const renderItem = ({item}) => {
     const title = item;
     const data = history.data[title];
