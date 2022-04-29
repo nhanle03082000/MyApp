@@ -61,7 +61,8 @@ const profileScreen = () => {
         const getTime = new Date();
         const fulltime = getTime.toISOString();
         const date = fulltime.slice(0, 7);
-        const requestUrl = 'http://192.168.41.29:4000/information/getTime';
+        const requestUrl =
+          'https://greenwich-attendance.herokuapp.com/information/getTime';
         const response = await axios.post(requestUrl, {
           userId: dataJson._id,
           date: date,

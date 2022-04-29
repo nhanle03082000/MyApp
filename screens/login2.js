@@ -33,7 +33,8 @@ const login2 = ({navigation}) => {
       console.log(user);
       const pass = isLogin.password;
       console.log(pass);
-      const requestUrl = 'http://192.168.41.29:4000/auth/login';
+      const requestUrl =
+        'https://greenwich-attendance.herokuapp.com/auth/login';
       const response = await axios.post(requestUrl, {
         username: user,
         password: pass,

@@ -113,7 +113,8 @@ const App = () => {
       console.log('ssid', getInfor.ssid);
       console.log('userid', user);
 
-      const requestUrl = 'http://192.168.41.29:4000/information/create';
+      const requestUrl =
+        'https://greenwich-attendance.herokuapp.com/information/create';
       const response = await axios.post(requestUrl, {
         uniqueId: getInfor.uniqueId,
         ipAddress: getInfor.ipAddress,
@@ -196,7 +197,8 @@ const App = () => {
         const getTime = new Date();
         const fulltime = getTime.toISOString();
         const date = fulltime.slice(0, 10);
-        const requestUrl = 'http://192.168.41.29:4000/information/checkin';
+        const requestUrl =
+          'https://greenwich-attendance.herokuapp.com/information/checkin';
         const response = await axios.post(requestUrl, {
           userId: dataJson._id,
           date: date,
@@ -237,7 +239,8 @@ const App = () => {
         const getTime = new Date();
         const fulltime = getTime.toISOString();
         const date = fulltime.slice(0, 10);
-        const requestUrl = 'http:/192.168.41.29:4000/information/checkout';
+        const requestUrl =
+          'https://greenwich-attendance.herokuapp.com/information/checkout';
         const response = await axios.post(requestUrl, {
           userId: dataJson._id,
           date: date,
@@ -347,7 +350,7 @@ const App = () => {
           // disabled={true}
           // loading={loadingButtonCheckOut}
           // TouchableComponent={}
-          buttonStyle={styles.loginBtn}
+          buttonStyle={styles.loginBtn1}
           // icon={{
           //   name: 'check-circle',
           //   size: 25,
@@ -388,6 +391,17 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginBtn: {
+    width: '100%',
+    backgroundColor: '#93278f',
+    borderRadius: 25,
+    height: 50,
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    marginTop: 20,
+  },
+  loginBtn1: {
     width: '100%',
     backgroundColor: '#93278f',
     borderRadius: 25,
